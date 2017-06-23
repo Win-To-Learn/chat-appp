@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Starcoder Chat App</title>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.2/socket.io.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<style>
+		body {
+			margin-top: 30px;
+			background: url(https://ak5.picdn.net/shutterstock/videos/4102681/thumb/1.jpg);
+		}
+		#messageArea {
+			display: none;
+			margin-top: 50px;
+		}
+		#userFormArea {
+			margin-top: 150px;
+		}
+		.col-centered{
+			float: none;
+			margin: 0 auto;
+		}
+		.img-responsive {
+			margin: 0 auto;
+		}
+		label {
+			color: white;
+		}
+	</style>
+</head>
+<body>
+	<!--chat app interface-->
+	<div class="container">
+		<img src="http://aequoreagames.com/wordpress/wp-content/uploads/2017/05/starcoder-logo.png" class="img-responsive">
+			<div class="text-center">
+				<div id="userFormArea" class="row">
+					<div class="col-md-3 col-centered">
+						<form id="userForm">
+							<div class="form-group">
+								<label>Enter Name</label>
+								<input class="form-control" id="username" />
+								<label>Saturday Class Password</label>
+								<input class="form-control" id="password" />
+								<br />
+								<input type="submit" class="btn btn-primary" value="Login" />
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		<div id="messageArea" class="row">
+			<!--sidebar to show users-->
+			<div class="col-md-4">
+				<div class="well">
+					<h3>Online Users</h3>
+					<ul class="list-group" id="users"></ul>
+				</div>
+				
+			</div>
+			<!--main chat area-->
+			<div class="col-md-8">
+				<div class="chat" id="chat"></div>
+
+				<form id="messageForm">
+					<div class="form-group">
+						<label>Enter message</label>
+						<textarea class="form-control" id="message"></textarea>
+						<br />
+						<input type="submit" class="btn btn-primary" value="Send Message" />
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<script>
+		$(function(){
+			var socket = io.connect();
+			var $messageForm = $('#messageForm');
+			var $message = $('#message');
+			var $chat = $('#chat');
+			var $messageArea = $('#messageArea');
+			var $userFormArea = $('#userFormArea');
+			var $userForm = $('#userForm');
+			var $users = $('#users');
+			var $username = $('#username');
+			var $password = $('#password');
+
+
+			
+			// event for when message form is submitted
+			$messageForm.submit(function(e){
+				e.preventDefault();
+				socket.emit('send message', $message.val());
+				$message.val('');
+			});
+
+			socket.on('new message', function(data){
+				$chat.append('<div class="well"><strong>'+data.user+'</strong>: '+data.msg+'</div>');
+			});
+			
+			$userForm.submit(function(e){
+
+				if($password.val()=='superstar') {
+					e.preventDefault();
+					socket.emit('new user', $username.val(), function (data) {
+						if (data) {
+							$userFormArea.hide();
+							$messageArea.show();
+						}
+					});
+					$username.val('');
+				}
+			});
+
+			socket.on('get users', function(data){
+				var html = '';
+				for(i=0; i<data.length; i++){
+					html += '<li class="list-group-item">'+data[i]+'</li>';
+				}
+				$users.html(html);
+			});
+
+		});
+	</script>
+</body>
+</html>
