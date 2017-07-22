@@ -96,7 +96,7 @@
 			
 			// event for when message form is submitted
 			$messageForm.submit(function(e){
-				alert("Class is not in session.");
+				//alert("Class is not in session.");
 				e.preventDefault();
 				socket.emit('send message', $message.val());
 				$message.val('');
