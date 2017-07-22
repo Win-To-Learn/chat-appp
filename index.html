@@ -32,8 +32,11 @@
 	</style>
 </head>
 <body>
+
+	<!--chat app interface
+
 	<h1>Class is not in session</h1>
-	<!--chat app interface-->
+	-->
 	<div class="container">
 		<img src="http://aequoreagames.com/wordpress/wp-content/uploads/2017/05/starcoder-logo.png" class="img-responsive">
 			<div class="text-center">
@@ -78,7 +81,7 @@
 	</div>
 	<script>
 		$(function(){
-			//var socket = io.connect();
+			var socket = io.connect();
 			var $messageForm = $('#messageForm');
 			var $message = $('#message');
 			var $chat = $('#chat');
@@ -105,7 +108,7 @@
 			
 			$userForm.submit(function(e){
 
-				alert("Class is not in session.");
+				//alert("Class is not in session.");
 
 				if($password.val()=='superstar') {
 					e.preventDefault();
