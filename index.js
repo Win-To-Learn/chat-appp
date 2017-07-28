@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
+var shutdown;
 
 //arrays to store users and connections
 users = [];
@@ -45,5 +46,10 @@ io.sockets.on('connection', function(socket){
 	function updateUsernames(){
 		io.sockets.emit('get users', users);
 	}
+	//turn off starcoder; make it unavailable
+	socket.on('status', function(shutdown){
+
+
+	});
 });
 	

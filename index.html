@@ -32,11 +32,7 @@
 	</style>
 </head>
 <body>
-
-	<!--chat app interface
-
-	<h1>Class is not in session</h1>
-	-->
+	<!--chat app interface-->
 	<div class="container">
 		<img src="http://aequoreagames.com/wordpress/wp-content/uploads/2017/05/starcoder-logo.png" class="img-responsive">
 			<div class="text-center">
@@ -46,8 +42,6 @@
 							<div class="form-group">
 								<label>Enter Name</label>
 								<input class="form-control" id="username" />
-								<label>Saturday Class Password</label>
-								<input class="form-control" id="password" />
 								<br />
 								<input type="submit" class="btn btn-primary" value="Login" />
 							</div>
@@ -79,9 +73,66 @@
 			</div>
 		</div>
 	</div>
+
+			<!--adminArea-->
+			<div class="container">
+      			<div class="header clearfix">
+			        <nav>
+			          <ul class="nav nav-pills pull-right">
+			              <li role="presentation"><a href="/">Dashboard</a></li>
+			              <li role="presentation"><a href="/users/logout">Logout</a></li>
+			          </ul>
+			        </nav>
+        		<h3 class="text-muted">Sharestarcode</h3>
+      		</div>
+
+				<div class="container">
+						<div class="text-center">
+							<div id="adminArea" class="row">
+								<div class="col-md-3 col-centered">
+									<form name="selection">
+										<input type="radio" name="status" value="on">Power<br/>
+										<input type="radio" name="status" value="off">Off<br/>
+
+										<input type="submit" value="Update" onclick=get() />
+									</form>
+								</div>
+							</div>
+						</div>
+		      </div>
+
+		      <footer class="footer">
+		        <p>&copy; 2017 Starcoder, Inc.</p>
+		      </footer>
+
+		    </div> <!-- /container -->
+
+	<script type="text/javascript">
+		function get(){
+			var get_value;
+			//shutdown variable to operate starcoder
+			if(document.selection.status[0].checked){
+				get_status=document.selection.status[0].value;
+				alert('You have selected ' + get_status);
+				shutdown = false;
+				
+			} else if(document.selection.status[1].checked){
+				get_status=document.selection.status[1].value;
+				alert('You have selected ' + get_status);
+				shutdown = true;
+
+			}
+		}
+//MISSING
+		function status(){
+			if 
+		}
+	</script>
+
+	
 	<script>
 		$(function(){
-			var socket = io.connect();
+			//var socket = io.connect();
 			var $messageForm = $('#messageForm');
 			var $message = $('#message');
 			var $chat = $('#chat');
@@ -90,13 +141,13 @@
 			var $userForm = $('#userForm');
 			var $users = $('#users');
 			var $username = $('#username');
-			var $password = $('#password');
+			var $adminArea = $('#adminArea');
+			var $shutdown = $('shutdown');
 
 
 			
 			// event for when message form is submitted
 			$messageForm.submit(function(e){
-				//alert("Class is not in session.");
 				e.preventDefault();
 				socket.emit('send message', $message.val());
 				$message.val('');
@@ -105,24 +156,49 @@
 			socket.on('new message', function(data){
 				$chat.append('<div class="well"><strong>'+data.user+'</strong>: '+data.msg+'</div>');
 			});
-			
-			$userForm.submit(function(e){
 
-				//alert("Class is not in session.");
+
+			$userForm.submit(function(e){
 
 				if($password.val()=='superstar') {
 					e.preventDefault();
-
 					socket.emit('new user', $username.val(), function (data) {
 						if (data) {
 							$userFormArea.hide();
 							$messageArea.show();
+							$adminArea.hide();
 						}
 					});
 					$username.val('');
-
 				}
 			});
+
+			//event for when admin, and admin pw is submitted in login
+			$userForm.submit(function(e){
+				if($users.val()=='admin' && $password.val()=='ironman'){
+					e.preventDefault();
+					if(data){
+						$userFormArea.hide();
+						$messageArea.hide();
+						$adminArea.show();
+					}
+				}
+			}
+
+			});
+//MISSING WORK
+			$adminArea.submit(function(e){
+				if($shutdown == true){
+					socket.emit('status', function(shutdown){
+
+					})
+				}
+				else {
+					return false;
+				}
+			});
+
+
 
 			socket.on('get users', function(data){
 				var html = '';
